@@ -75,6 +75,42 @@ class playerHand {
         
 };
 
+class communityCards {
+    public:
+        Card card1;
+        Card card2;
+        Card card3;
+        Card card4;
+        Card card5;
+        
+        communityCards() {
+            card1 = Card();
+            card2 = Card();
+            card3 = Card();
+            card4 = Card();
+            card5 = Card();
+        }
+
+        communityCards(Card card1, Card card2, Card card3, Card card4, Card card5) {
+            this->card1 = card1;
+            this->card2 = card2;
+            this->card3 = card3;
+            this->card4 = card4;
+            this->card5 = card5;
+        }
+
+        void printCommunityCards() {
+            cout << "The Flop:" << endl;
+            card1.printCard();
+            card2.printCard();
+            card3.printCard();
+            cout << "Turn:" << endl;
+            card4.printCard();
+            cout << "River:" << endl;
+            card5.printCard();
+        }
+};
+
 Card* randomCard() {
     Card* randomCard = new Card(distr(gen));
     return randomCard; 
@@ -126,13 +162,92 @@ vector<playerHand> generatePlayerHands(int numPlayers) {
     return playerHands;
 }
 
+communityCards generateCommunityCards() {
+    Card firstCard, secondCard, thirdCard, fourthCard, fifthCard;
+    for (int index = 0; index < 5; index++) {
+        while (1) {
+            Card* ptr = randomCard();
+            firstCard = *ptr;
+            if (seenCards.find(firstCard) == seenCards.end()) {
+                seenCards.insert(firstCard);
+                delete ptr;
+                break;
+            } else {
+                delete ptr;
+                continue;
+            }
+        }
+
+        while (1) {
+            Card* ptr = randomCard();
+            secondCard = *ptr;
+            if (seenCards.find(secondCard) == seenCards.end()) {
+                seenCards.insert(secondCard);
+                delete ptr;
+                break;
+            } else {
+                delete ptr;
+                continue;
+            }
+        }
+
+        while (1) {
+            Card* ptr = randomCard();
+            thirdCard = *ptr;
+            if (seenCards.find(thirdCard) == seenCards.end()) {
+                seenCards.insert(thirdCard);
+                delete ptr;
+                break;
+            } else {
+                delete ptr;
+                continue;
+            }
+        }
+
+        while (1) {
+            Card* ptr = randomCard();
+            fourthCard = *ptr;
+            if (seenCards.find(fourthCard) == seenCards.end()) {
+                seenCards.insert(fourthCard);
+                delete ptr;
+                break;
+            } else {
+                delete ptr;
+                continue;
+            }
+        }
+
+        while (1) {
+            Card* ptr = randomCard();
+            fifthCard = *ptr;
+            if (seenCards.find(fifthCard) == seenCards.end()) {
+                seenCards.insert(fifthCard);
+                delete ptr;
+                break;
+            } else {
+                delete ptr;
+                continue;
+            }
+        }
+    }
+
+    return communityCards(firstCard, secondCard, thirdCard, fourthCard, fifthCard);
+}
 
 void runGame(int numPlayers, int handNumber) {
     vector<playerHand> playerHands = generatePlayerHands(numPlayers);
+    communityCards theBoard = generateCommunityCards();
 
+    cout << "Player Cards:" << endl;
+    int index = 1;
     for (auto x : playerHands) {
+        cout << "Player Number: " << index << endl;
         x.printHand();
+        index++;
     }
+
+    cout << "Community Cards:" << endl;
+    theBoard.printCommunityCards(); 
     
     cout << "Hand #" << handNumber << " has concluded." << endl;
 }
