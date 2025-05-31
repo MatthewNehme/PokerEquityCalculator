@@ -1,4 +1,5 @@
 #include "Community.hpp"
+#include <iostream>
 
 using namespace std;
 

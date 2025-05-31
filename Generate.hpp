@@ -4,11 +4,12 @@
 #include "Player.hpp"
 #include "Community.hpp"
 #include <iostream>
+#include <array>
 
 using namespace std;
 
 Card randomCard();
 void resetSeenCards();
 Card generateCard();
-vector<Player> generatePlayerHands(int numPlayers);
+Player* generatePlayerHands(int numPlayers);
 Community generateCommunityCards();

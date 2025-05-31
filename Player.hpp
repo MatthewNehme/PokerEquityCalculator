@@ -1,7 +1,6 @@
 #pragma once
 #include "Card.hpp"
 
-
 class Player {
     public:
         Card card1; // first card in a players hand

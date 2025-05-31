@@ -1,6 +1,7 @@
 #include "Generate.hpp"
 #include <unordered_set>
 #include <random>
+#include <array>
 
 using namespace std;
 
@@ -31,8 +32,8 @@ Card generateCard() {
     return card;
 }
 
-vector<Player> generatePlayerHands(int numPlayers) { // note:   change this from vector to array cause array faster :)
-    vector<Player> playerHands(numPlayers);
+Player* generatePlayerHands(int numPlayers) { // note:   change this from vector to array cause array faster :)
+    Player* playerHands = new Player[numPlayers];
     Card firstCard, secondCard;
     resetSeenCards();
 
