@@ -6,13 +6,13 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 TARGET = poker
 
 # Source files
-SOURCES = main.cpp Card.cpp Player.cpp Community.cpp Deck.cpp Generate.cpp
+SOURCES = main.cpp Card.cpp Player.cpp Community.cpp Deck.cpp Generate.cpp PokerGame.cpp
 
 # Object files (automatically generated from source files)
 OBJECTS = $(SOURCES:.cpp=.o)
 
 # Header files (for dependency tracking)
-HEADERS = Card.hpp Player.hpp Community.hpp Deck.hpp Generate.hpp
+HEADERS = Card.hpp Player.hpp Community.hpp Deck.hpp Generate.hpp PokerGame.hpp
 
 # Default target
 all: $(TARGET)
