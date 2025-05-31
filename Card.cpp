@@ -1,6 +1,4 @@
 #include "Card.hpp"
-#include "Deck.hpp"
-#include <array>
 
 using namespace std;
 
@@ -15,7 +13,7 @@ Card::Card(int cardNum) {
 }
 
 void Card::printCard() {
-    if (card < 0 || card >= cards.size()) {
+    if (card < 0 || card >= static_cast<int>(cards.size())) {
         cout << "Invalid Card" << endl;
     } else {
         cout << cards[card] << endl;

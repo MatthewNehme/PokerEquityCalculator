@@ -1,9 +1,4 @@
 #include "Community.hpp"
-#include "Card.hpp"
-#include "Deck.hpp"
-#include <iostream>
-#include <array>
-#include <string>
 
 using namespace std;
 

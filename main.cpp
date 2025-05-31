@@ -7,51 +7,8 @@
 #include "Deck.hpp"
 #include "Player.hpp"
 #include "Community.hpp"
+#include "Generate.hpp"
 using namespace std;
-
-// global random engine and distribution
-static random_device rd;
-static mt19937 gen(rd());
-static uniform_int_distribution<> distr(0, 51); 
-
-Card randomCard() {
-    return Card(distr(gen)); 
-}
-
-unordered_set<Card> seenCards; // set of cards already dealt
-
-void resetSeenCards() {
-    if (!seenCards.empty()) {
-        seenCards.clear();
-    }
-}
-
-Card generateCard() {
-    Card card;
-    do {
-        card = randomCard();
-    } while (seenCards.find(card) != seenCards.end());
-    seenCards.insert(card);
-    return card;
-}
-
-vector<Player> generatePlayerHands(int numPlayers) {
-    vector<Player> playerHands(numPlayers);
-    Card firstCard, secondCard;
-    resetSeenCards();
-
-    for (int playerNumber = 0; playerNumber < numPlayers; playerNumber++) {
-        firstCard = generateCard();
-        secondCard = generateCard();
-        playerHands[playerNumber] = Player(firstCard, secondCard);
-    }
-
-    return playerHands;
-}
-
-Community generateCommunityCards() {
-    return Community(generateCard(), generateCard(), generateCard(), generateCard(), generateCard());
-}
 
 void runGame(int numPlayers, int handNumber) {
     vector<Player> playerHands = generatePlayerHands(numPlayers);

@@ -1,6 +1,8 @@
 #pragma once
+#include "Deck.hpp"
 #include <iostream>
 #include <functional>
+#include <array>
 
 class Card {
     public:

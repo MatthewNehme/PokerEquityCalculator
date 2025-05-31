@@ -1,8 +1,4 @@
 #include "Player.hpp"
-#include "Card.hpp"
-#include "Deck.hpp"
-#include <array>
-#include <string>
 
 Player::Player() {
     card1 = Card();
