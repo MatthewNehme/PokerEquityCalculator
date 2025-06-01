@@ -4,30 +4,30 @@
 using namespace std;
 
 Community::Community() {
-    card1 = Card();
-    card2 = Card();
-    card3 = Card();
-    card4 = Card();
-    card5 = Card();
+    card[0] = Card();
+    card[1] = Card();
+    card[2] = Card();
+    card[3] = Card();
+    card[4] = Card();
 }
 
 Community::Community(Card card1, Card card2, Card card3, Card card4, Card card5) {
-    this->card1 = card1;
-    this->card2 = card2;
-    this->card3 = card3;
-    this->card4 = card4;
-    this->card5 = card5;
+    card[0] = card1;
+    card[1] = card2;
+    card[2] = card3;
+    card[3] = card4;
+    card[4] = card5;
 }
 
 void Community::printCommunityCards() {
     cout << "The Flop:" << endl;
-    card1.printCard();
-    card2.printCard();
-    card3.printCard();
+    card[0].printCard();
+    card[1].printCard();
+    card[2].printCard();
 
     cout << "Turn:" << endl;
-    card4.printCard();
+    card[3].printCard();
     
     cout << "River:" << endl;
-    card5.printCard();
+    card[4].printCard();
 }

@@ -15,7 +15,9 @@ void runGame(int numPlayers, int handNumber) {
     }
 
     cout << "Community Cards:" << endl;
-    theBoard.printCommunityCards(); 
+    theBoard.printCommunityCards();
+
+    highCardWin(playerHands, theBoard, numPlayers);
     
     cout << "Hand #" << handNumber << " has concluded." << endl;
     delete[] playerHands;
