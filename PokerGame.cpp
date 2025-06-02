@@ -31,12 +31,14 @@ void runGame(int numPlayers, int handNumber) {
     theBoard = orderCommunityCards(theBoard);
     vector<unordered_map<int, int>> frequencyTable = createCardFrequencyTable(playerHands, theBoard, numPlayers);
     printFrequencyTable(frequencyTable);
-    unordered_set<int> pairIndex = checkPair(playerHands, theBoard, numPlayers);
-    for (auto x : pairIndex) {
-         cout << x << endl;
-    }
+    unordered_set<int> pairIndex = checkPair(frequencyTable, numPlayers);
+    // for (auto x : pairIndex) {
+    //      cout << x << endl;
+    // }
+
+    findBestHand(frequencyTable, pairIndex, playerHands, theBoard, numPlayers);
     
-    highCardWin(playerHands, theBoard, numPlayers);    
+    // highCardWin(playerHands, theBoard, numPlayers);    
     cout << "Hand #" << handNumber << " has concluded." << endl;
     delete[] playerHands;
 }

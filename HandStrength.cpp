@@ -127,34 +127,121 @@ vector<unordered_map<int, int>> createCardFrequencyTable(Player* playerHands, Co
     return cardFrequencyTable;
 }
 
-unordered_set<int> checkPair(Player* playerHands, Community communityCards, int numPlayers) {
-    unordered_set<int> pairIndex;
-    for (int i = 0; i < numPlayers; i++) {
-        if (hasPocketPair(playerHands[i])) {
-            pairIndex.insert(i);
-        } else {
-            int actualValue1 = playerHands[i].card1.card % 13;
-            int actualValue2 = playerHands[i].card2.card % 13;
-            int actualValue3 = communityCards.card[0].card % 13;
-            int j = 0;
-            while (actualValue1 >= actualValue3 || actualValue2 >= actualValue3) {
-                if (actualValue1 == actualValue3 || actualValue2 == actualValue3) {
-                    pairIndex.insert(i);
-                    break;
-                }
+unordered_map<int, int> createCommunityFrequencyTable(Community communityCards) {
+    unordered_map<int, int> communityFrequencyTable;
+    array<int, 5> communityArray = communityCardArray(communityCards);
+    for (int card : communityArray) {
+        ++communityFrequencyTable[card];
+    }
+    return communityFrequencyTable;
+}
 
-                ++j;
-                if (j == 5) break;
-                actualValue3 = communityCards.card[j].card % 13;
+int maxFrequency(vector<unordered_map<int, int>> cardFrequencyTable, int numPlayers) {
+    int maxFreq = 1;
+    for (int i = 0; i < numPlayers; ++i) {
+        for (const auto& pair : cardFrequencyTable[i]) {
+            maxFreq = max(maxFreq, pair.second);
+        }
+    }
+
+    return maxFreq;
+}
+
+unordered_set<int> checkPair(vector<unordered_map<int, int>> cardFrequencyTable, int numPlayers) {
+    unordered_set<int> pairIndex;
+    for (int i = 0; i < numPlayers; ++i) {
+        for (const auto& pair : cardFrequencyTable[i]) {
+            if (pair.second > 1) {
+                pairIndex.insert(i);
+                break;
             }
         }
+    }
+
+    if (pairIndex.size() == 0) {
+        pairIndex.insert(-1);
     }
 
     return pairIndex;
 }
 
-unordered_set<int> checkFullHouse(Player* playerHands, Community communityCards, unordered_set<int> pairIndex) {
-    unordered_set<int> fullHouseHands = pairIndex;
 
-    return fullHouseHands;
+void printQuads(vector<unordered_map<int, int>> cardFrequencyTable, unordered_map<int, int> communityFrequencyTable, Player* playerHands, int numPlayers) {
+    int singleCountCard = -1;
+    bool quadsOnBoard = false;
+    for (const auto& [value, count] : communityFrequencyTable) {
+        if (count == 1) {
+            singleCountCard = value;
+        } else if (count == 4) {
+            quadsOnBoard = true;
+        }
+    }
+
+    if (quadsOnBoard) {
+        if (singleCountCard == 12) {
+            cout << "The Hand Chops." << endl;
+            return;
+        }
+
+        vector<int> maxIndex;
+        maxIndex.push_back(0);
+        int maxValue = max(singleCountCard, playerHands[0].card1.card % 13);
+        maxValue = max(maxValue, playerHands[0].card2.card % 13);
+        for (int i = 1; i < numPlayers; ++i) {
+            int currMaxValue = max(singleCountCard, playerHands[i].card1.card % 13);
+            currMaxValue = max(currMaxValue, playerHands[i].card2.card % 13);
+            if (currMaxValue > maxValue) {
+                maxIndex.clear();
+                maxIndex.push_back(i);
+                maxValue = currMaxValue;
+            } else if (currMaxValue == maxValue) {
+                maxIndex.push_back(i);
+            }
+        }
+
+        int size = maxIndex.size();
+        if (size > 1) {
+            cout << "The Hand Chops Between:" << endl;
+            for (int i = 0; i < size; i++) {
+                cout << "Player " << maxIndex[i] + 1 << endl;
+            }
+        } else {
+            cout << "Player " << maxIndex[0] + 1 << " Wins With Quads" << endl; 
+        }
+
+        return;
+    }
+
+
+    int currLargestValue = -1;
+    int currLargestHand = 0;
+    for (int i = 0; i < numPlayers; ++i) {
+        for (const auto& [value, count] : cardFrequencyTable[i]) {
+            if (count == 4) {
+                if (currLargestValue < value) {
+                    currLargestHand = i;
+                    currLargestValue = value;
+                }
+                break;
+            }
+        }
+    }
+    
+    cout << "Player " << currLargestHand + 1 << " Wins With Quads!" << endl;
+}
+
+// unordered_set<int> checkFullHouse(Player* playerHands, Community communityCards, unordered_set<int> pairIndex) {
+//     unordered_set<int> fullHouseHands = pairIndex;
+
+//     return fullHouseHands;
+// }
+
+void findBestHand(vector<unordered_map<int, int>> cardFrequencyTable, unordered_set<int> pairIndex, Player* playerHands, Community communityCards, int numPlayers) {
+    int maximumFrequency = maxFrequency(cardFrequencyTable, numPlayers);
+    if (maximumFrequency == 4) {
+        unordered_map<int, int> communityFrequencyTable = createCommunityFrequencyTable(communityCards);
+        printQuads(cardFrequencyTable, communityFrequencyTable, playerHands, numPlayers);
+    }
+
+    
 }
