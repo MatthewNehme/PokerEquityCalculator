@@ -2,6 +2,17 @@
 
 using namespace std;
 
+void printFrequencyTable(const std::vector<std::unordered_map<int, int>>& freqTable) {
+    for (size_t playerIdx = 0; playerIdx < freqTable.size(); ++playerIdx) {
+        std::cout << "Player " << playerIdx << " frequency table:\n";
+        for (const auto& [cardRank, count] : freqTable[playerIdx]) {
+            std::cout << "  Card rank " << cardRank << " -> Count: " << count << '\n';
+        }
+        std::cout << "--------------------------\n";
+    }
+}
+
+
 void runGame(int numPlayers, int handNumber) {
     Player* playerHands = generatePlayerHands(numPlayers);
     Community theBoard = generateCommunityCards();
@@ -17,8 +28,15 @@ void runGame(int numPlayers, int handNumber) {
     cout << "Community Cards:" << endl;
     theBoard.printCommunityCards();
 
-    highCardWin(playerHands, theBoard, numPlayers);
+    theBoard = orderCommunityCards(theBoard);
+    vector<unordered_map<int, int>> frequencyTable = createCardFrequencyTable(playerHands, theBoard, numPlayers);
+    printFrequencyTable(frequencyTable);
+    unordered_set<int> pairIndex = checkPair(playerHands, theBoard, numPlayers);
+    for (auto x : pairIndex) {
+         cout << x << endl;
+    }
     
+    highCardWin(playerHands, theBoard, numPlayers);    
     cout << "Hand #" << handNumber << " has concluded." << endl;
     delete[] playerHands;
 }

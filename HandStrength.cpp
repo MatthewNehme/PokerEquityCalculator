@@ -4,6 +4,20 @@
 
 using namespace std;
 
+Community orderCommunityCards(Community communityCards) {
+    for (int i = 0; i < 5; i++) {
+        int j = i;
+        while (j > 0 && (communityCards.card[j - 1].card % 13) > (communityCards.card[j].card % 13)) {
+            int temp = communityCards.card[j - 1].card;
+            communityCards.card[j - 1].card = communityCards.card[j].card;
+            communityCards.card[j].card = temp;
+            j--;
+        }
+    }
+
+    return communityCards;
+}
+
 vector<int> highestCard(Player* playerHands, int numPlayers) {
     vector<int> playerIndex;
     int highestCard = max(playerHands[0].card1.card % 13, playerHands[0].card2.card % 13);
@@ -43,13 +57,12 @@ vector<int> secondHighestCard(Player* playerHands, vector<int> playerIndex, int 
 
 
 void highCardWin(Player* playerHands, Community communityCards, int numPlayers) {
-    int minimum = min({communityCards.card[0].card % 13, communityCards.card[1].card % 13, communityCards.card[2].card % 13,
-                  communityCards.card[3].card % 13, communityCards.card[4].card % 13});
+    Community sortedCommunityCards = orderCommunityCards(communityCards);
     vector<int> maxCard = highestCard(playerHands, numPlayers);
-    if (max(playerHands[maxCard.at(0)].card1.card, playerHands[maxCard.at(0)].card2.card) < minimum) {
+    if (max(playerHands[maxCard.at(0)].card1.card, playerHands[maxCard.at(0)].card2.card) < sortedCommunityCards.card[0].card) {
         cout << "The Hand Chops" << endl;
         return;
-    } else if (max(playerHands[maxCard.at(0)].card1.card, playerHands[maxCard.at(0)].card2.card) > minimum) {
+    } else if (max(playerHands[maxCard.at(0)].card1.card, playerHands[maxCard.at(0)].card2.card) > sortedCommunityCards.card[0].card) {
         if (maxCard.size() == 1) {
             cout << "Player " << maxCard.at(0) + 1 << " Wins With High Card!" << endl;
             return;
@@ -57,16 +70,10 @@ void highCardWin(Player* playerHands, Community communityCards, int numPlayers) 
     } 
 
     vector<int> minCard = secondHighestCard(playerHands, maxCard, maxCard.size());
-
     int playerHandMin = min(playerHands[minCard.at(0)].card1.card % 13, playerHands[minCard.at(0)].card2.card % 13);
-    int numGreater = 0;
-    for (size_t i = 0; i < communityCards.card.size(); ++i) {
-        if (playerHandMin > communityCards.card[i].card % 13) {
-            numGreater++;
-        }
-    }
+    bool relevant = (playerHandMin > sortedCommunityCards.card[0].card && playerHandMin > sortedCommunityCards.card[1].card);
 
-    if (numGreater > 1 && minCard.size() > 1) {
+    if (relevant && minCard.size() > 1) {
         cout << "The Hand Chops Between:" << endl;
         for (size_t i = 0; i < minCard.size(); ++i) {
             cout << "Player " << minCard.at(i) + 1 << endl; 
@@ -74,7 +81,7 @@ void highCardWin(Player* playerHands, Community communityCards, int numPlayers) 
         return;
     }
 
-    if (numGreater > 1) {
+    if (relevant) {
         cout << "Player " << minCard.at(0) + 1 << " Wins With High Card!" << endl;
         return;
     }
@@ -85,4 +92,69 @@ void highCardWin(Player* playerHands, Community communityCards, int numPlayers) 
     }
 
     return;
+}
+
+bool hasPocketPair(Player playerHand) {
+    return playerHand.card1.card % 13 == playerHand.card2.card % 13;
+}
+
+array<int, 5> communityCardArray(Community communityCards) {
+    array<int, 5> communityArray;
+    for (int i = 0 ; i < 5; i++) {
+        communityArray[i] = communityCards.card[i].card % 13;
+    }
+    return communityArray;
+}
+
+vector<unordered_map<int, int>> createCardFrequencyTable(Player* playerHands, Community communityCards, int numPlayers) {
+    vector<unordered_map<int, int>> cardFrequencyTable;
+    cardFrequencyTable.resize(numPlayers);
+    array<int, 5> communityArray = communityCardArray(communityCards);
+
+    for (int i = 0; i < numPlayers; ++i) {
+        unordered_map<int, int> playerFrequencyTable;
+        playerFrequencyTable.reserve(7);
+
+        for (int card : communityArray) {
+            ++playerFrequencyTable[card];
+        }
+
+        ++playerFrequencyTable[playerHands[i].card1.card % 13];
+        ++playerFrequencyTable[playerHands[i].card2.card % 13];
+        cardFrequencyTable[i] = playerFrequencyTable;  
+    }
+
+    return cardFrequencyTable;
+}
+
+unordered_set<int> checkPair(Player* playerHands, Community communityCards, int numPlayers) {
+    unordered_set<int> pairIndex;
+    for (int i = 0; i < numPlayers; i++) {
+        if (hasPocketPair(playerHands[i])) {
+            pairIndex.insert(i);
+        } else {
+            int actualValue1 = playerHands[i].card1.card % 13;
+            int actualValue2 = playerHands[i].card2.card % 13;
+            int actualValue3 = communityCards.card[0].card % 13;
+            int j = 0;
+            while (actualValue1 >= actualValue3 || actualValue2 >= actualValue3) {
+                if (actualValue1 == actualValue3 || actualValue2 == actualValue3) {
+                    pairIndex.insert(i);
+                    break;
+                }
+
+                ++j;
+                if (j == 5) break;
+                actualValue3 = communityCards.card[j].card % 13;
+            }
+        }
+    }
+
+    return pairIndex;
+}
+
+unordered_set<int> checkFullHouse(Player* playerHands, Community communityCards, unordered_set<int> pairIndex) {
+    unordered_set<int> fullHouseHands = pairIndex;
+
+    return fullHouseHands;
 }
